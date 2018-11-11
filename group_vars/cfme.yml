@@ -1,0 +1,29 @@
+###################################
+# This file contains ansible variables for all hosts
+# within the cfme group.
+#
+# In other words, all hosts in the region - VMDB and non-VMDB alike.
+###################################
+
+###
+# The region number for the region you wish to deploy
+###
+cfme_region: 1
+
+###
+# Database credentials.
+###
+cfme_db_user: "{{ vault_cfme_db_user }}"
+cfme_db_pass: "{{ vault_cfme_db_pass }}"
+
+###
+# The device path to the log disk (if desired) and the temporary disk
+# (if desired). 
+#
+# No wiping of these disks will occur. If these parameters are set
+# the play will attempt to configure them as log and temp disks. It will
+# not do so, however, if there are existing mounts for the VMDB log and temp
+# directories.
+###
+cfme_logdisk: /dev/vdc
+cfme_tmpdisk: /dev/vdd

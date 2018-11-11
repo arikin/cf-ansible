@@ -1,0 +1,11 @@
+##############################
+# This file has variables specific to the VMDB group only.
+#
+##############################
+
+
+###
+# The device to be used as the database disk. Note that this is *mandatory*
+# in CFME 4.5 and onwards.
+###
+cfme_dbdisk: /dev/vdb
