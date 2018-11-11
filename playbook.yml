@@ -66,6 +66,8 @@
 # key, if we're building an 'all-in-one' appliance. 
 - hosts: non-vmdb[0]
   become: true
+  tags:
+    - region_create
   tasks:
     - set_fact:
         primary_ip: "{{ hostvars[groups['primary_db'][0]]['ansible_default_ipv4']['address'] }}"
