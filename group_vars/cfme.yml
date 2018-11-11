@@ -27,3 +27,17 @@ cfme_db_pass: "{{ vault_cfme_db_pass }}"
 ###
 cfme_logdisk: /dev/vdc
 cfme_tmpdisk: /dev/vdd
+
+###
+# Zones that must exist within this region.
+#
+# Description must be provided.
+#
+# cfme_zones is a hash. The key is the name of the zone, the value is a hash
+# of parameters. At the moment only "description" is supported as a parameter.
+###
+cfme_zones:
+  Management:
+    description: Management zone
+  Provider:
+    description: Provider zone

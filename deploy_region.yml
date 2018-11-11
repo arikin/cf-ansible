@@ -149,3 +149,36 @@
       shell: "appliance_console_cli --hostname={{ primary_ip }} --username={{ cfme_db_user }} --password='{{ cfme_db_pass }}'"
       args:
         creates: /var/www/miq/vmdb/REGION
+
+
+####
+# This play ensures the zones defined in cfme_zones exist
+####
+- hosts: non-vmdb[0]
+  become: true
+  tags:
+    - zone_setup
+  tasks:
+    - name: verify zone parameters
+      fail:
+        msg: "{{item}} is not provided"
+      when: false
+
+    - name: build zone create script
+      set_fact:
+        zone_script: "{{ zone_script|default('') }}\nZone.create(:name=>'{{item.key}}', :description=>'{{item.value['description']}}')"
+      loop: "{{cfme_zones|default({})|dict2items}}"
+
+    - name: create temporary file on appliance
+      tempfile:
+        state: file
+      register: script_temp
+
+    - name: copy script to appliance
+      copy:
+        content: "{{zone_script}}"
+        dest: "{{ script_temp.path }}"
+
+    - name: create zones
+      shell: "/var/www/miq/vmdb/bin/rails r {{ script_temp.path }}"
+
