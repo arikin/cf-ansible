@@ -86,3 +86,27 @@
         name: evmserverd
         state: started
         enabled: yes
+
+- hosts: primary_db
+  become: true
+  tags:
+    - replication
+    - replication_primary
+  tasks:
+    - set_fact:
+        cluster_node_number: "{{cfme_db_node_number|default(groups['vmdb'].index(inventory_hostname) + 1)}}"
+    - name: configure primary database for replication
+      shell: "appliance_console_cli --replication=primary --cluster-node-number={{cluster_node_number}} --auto-failover --username='{{cfme_db_user}}' --password='{{cfme_db_pass}}' --dbname='{{cfme_db_name|default('vmdb_production')}}'"
+
+- hosts: standby_db
+  become: true
+  tags:
+    - replication
+    - replication_standby
+  tasks:
+    - set_fact:
+        cluster_node_number: "{{ cfme_db_node_number|default(groups['vmdb'].index(inventory_hostname) + 1) }}"
+        primary_ip: "{{ hostvars[groups['primary_db'][0]]['ansible_default_ipv4']['address'] }}"
+
+    - name: configure standby database for replication
+      shell: "appliance_console_cli --sshlogin='{{ansible_user}}' --sshpassword='{{ansible_ssh_pass}}' --fetch-key='{{primary_ip}}' --replication=standby --cluster-node-number={{cluster_node_number}} --primary-host={{primary_ip}} --username='{{cfme_db_user}}' --password='{{cfme_db_pass}}' --dbname='{{cfme_db_name|default('vmdb_production')}}'"
