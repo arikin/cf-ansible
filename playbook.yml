@@ -21,6 +21,7 @@
 
 - hosts: cfme
   become: true
+  gather_facts: false
   tags:
     - disks
   tasks:
@@ -49,6 +50,7 @@
 # configuration for postgres isn't supported.
 - hosts: primary_db
   become: true
+  gather_facts: false
   tags:
     - primary_db
   tasks:
@@ -66,6 +68,7 @@
 # key, if we're building an 'all-in-one' appliance. 
 - hosts: non-vmdb[0]
   become: true
+  gather_facts: false
   tags:
     - region_create
   tasks:
@@ -89,6 +92,7 @@
 
 - hosts: primary_db
   become: true
+  gather_facts: false
   tags:
     - replication
     - replication_primary
@@ -100,6 +104,7 @@
 
 - hosts: standby_db
   become: true
+  gather_facts: false
   tags:
     - replication
     - replication_standby
@@ -113,6 +118,7 @@
 
 - hosts: non-vmdb[1:]
   become: true
+  gather_facts: false
   tags:
     - region_join
   tasks:
