@@ -5,7 +5,7 @@ cfme-1.home.ajg.id.au
 cfme-2.home.ajg.id.au
 
 [non-vmdb]
-cfme-[3:5].home.ajg.id.au	join_external_region=1
+cfme-[3:5].home.ajg.id.au
 
 [vmdb:children]
 primary_db
