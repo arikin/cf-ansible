@@ -4,8 +4,16 @@ cfme-1.home.ajg.id.au
 [standby_db]
 cfme-2.home.ajg.id.au
 
-[non-vmdb]
-cfme-[3:5].home.ajg.id.au
+[management_zone]
+cfme-3.home.ajg.id.au
+cfme-4.home.ajg.id.au
+
+[provider_zone]
+cfme-5.home.ajg.id.au
+
+[non-vmdb:children]
+management_zone
+provider_zone
 
 [vmdb:children]
 primary_db
