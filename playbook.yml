@@ -19,6 +19,9 @@
       tags:
         - set_host
 
+#####
+# Configure the temporary and log disks for the appliances, if defined.
+#####
 - hosts: cfme
   become: true
   gather_facts: false
@@ -90,6 +93,10 @@
         state: started
         enabled: yes
 
+
+#####
+# Configure the primary database for replication.
+#####
 - hosts: primary_db
   become: true
   gather_facts: false
@@ -102,6 +109,10 @@
     - name: configure primary database for replication
       shell: "appliance_console_cli --replication=primary --cluster-node-number={{cluster_node_number}} --auto-failover --username='{{cfme_db_user}}' --password='{{cfme_db_pass}}' --dbname='{{cfme_db_name|default('vmdb_production')}}'"
 
+#####
+# Configure the standby database(s), if defined, to
+# replicate from the primary.
+#####
 - hosts: standby_db
   become: true
   gather_facts: false
@@ -116,6 +127,10 @@
     - name: configure standby database for replication
       shell: "appliance_console_cli --sshlogin='{{ansible_user}}' --sshpassword='{{ansible_ssh_pass}}' --fetch-key='{{primary_ip}}' --replication=standby --cluster-node-number={{cluster_node_number}} --primary-host={{primary_ip}} --username='{{cfme_db_user}}' --password='{{cfme_db_pass}}' --dbname='{{cfme_db_name|default('vmdb_production')}}'"
 
+#####
+# Join all remaining non-database appliances to the region
+# created in the primary DB.
+#####
 - hosts: non-vmdb[1:]
   become: true
   gather_facts: false
