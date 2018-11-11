@@ -1,0 +1,12 @@
+######
+# The list of roles that will be enabled on appliances
+# in this group.
+######
+cfme_appliance_roles:
+  - user_interface
+  - web_services
+  - websocket
+  - event
+
+cfme_zone: Management
+
