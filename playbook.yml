@@ -65,7 +65,8 @@
 # key, if we're building an 'all-in-one' appliance. 
 - hosts: non-vmdb[0]
   tasks:
-    - set_fact: primary_ip={{ hostvars[groups['primary_db'][0]]['ansible_eth0']['ipv4']['address'] }}
+    - set_fact:
+        primary_ip: "{{ hostvars[groups['primary_db'][0]]['ansible_default_ipv4']['address'] }}"
 
     - name: fetch remote encryption key
       shell: "appliance_console_cli --fetch-key='{{ primary_ip }}' --sshlogin='{{ cfme_ssh_user|default(ansible_user) }}' --sshpassword='{{ cfme_ssh_pass|default(ansible_ssh_pass) }}'"
