@@ -110,3 +110,21 @@
 
     - name: configure standby database for replication
       shell: "appliance_console_cli --sshlogin='{{ansible_user}}' --sshpassword='{{ansible_ssh_pass}}' --fetch-key='{{primary_ip}}' --replication=standby --cluster-node-number={{cluster_node_number}} --primary-host={{primary_ip}} --username='{{cfme_db_user}}' --password='{{cfme_db_pass}}' --dbname='{{cfme_db_name|default('vmdb_production')}}'"
+
+- hosts: non-vmdb[1:]
+  become: true
+  tags:
+    - region_join
+  tasks:
+    - set_fact:
+        primary_ip: "{{ hostvars[groups['primary_db'][0]]['ansible_default_ipv4']['address'] }}"
+
+    - name: fetch remote encryption key
+      shell: "appliance_console_cli --fetch-key='{{ primary_ip }}' --sshlogin='{{ cfme_ssh_user|default(ansible_user) }}' --sshpassword='{{ cfme_ssh_pass|default(ansible_ssh_pass) }}'"
+      args:
+        creates: /var/www/miq/vmdb/certs/v2_key
+
+    - name: join region in external database
+      shell: "appliance_console_cli --hostname={{ primary_ip }} --username={{ cfme_db_user }} --password='{{ cfme_db_pass }}'"
+      args:
+        creates: /var/www/miq/vmdb/REGION
