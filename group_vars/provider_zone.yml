@@ -1,0 +1,14 @@
+cfme_appliance_roles:
+  - automate
+  - database_operations
+  - database_owner
+  - ems_inventory
+  - ems_metrics_collector
+  - ems_metrics_coordinator
+  - ems_metrics_processor
+  - ems_operations
+  - notifier
+  - reporting
+  - scheduler
+
+cfme_zone: Provider
