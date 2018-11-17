@@ -77,13 +77,13 @@
       shell: ". /etc/profile && psql -d vmdb_production -tAq -c \"SELECT pg_is_in_recovery();\""
       register: pg_in_recovery
       delegate_to: "{{item}}"
-      loop: "{{ groups['vmdb'] }}"
+      with_items: "{{ groups['vmdb'] }}"
 
     - name: add host to vmdb-primary or vmdb-standby
       add_host: 
         hostname: "{{ item.item }}"
         groups: "{{ matching_groups[item.stdout] }}"
-      loop: "{{pg_in_recovery.results}}"
+      with_items: "{{pg_in_recovery.results}}"
 
     - name: Verify vmdb-primary has exactly one host
       fail:
@@ -93,7 +93,7 @@
     - name: Verify VMDB hosts are in one group or the other, but not both
       fail:
         msg: "VMDB host {{ item }} was found in both primary_db and standby_db."
-      loop: "{{ groups['vmdb'] }}"
+      with_items: "{{ groups['vmdb'] }}"
       when: (item in groups['primary_db']) and (item in groups['standby_db'])
 
   tags:
